@@ -14,6 +14,10 @@ export class YoutubePlaylistsAPIClient implements YoutubePlaylistsAPI {
         });
     }
 
+    public getFirstPlaylistsPage(): Promise<YoutubeAPIPlaylistResponse> {
+        return this.getPlaylists(YoutubePageToken.FIRST_PAGE);
+    }
+
     public async getPlaylists(youtubePageToken: YoutubePageToken): Promise<YoutubeAPIPlaylistResponse> {
         let parameters = this.buildPlaylistParameters(youtubePageToken);
         let playlistsResponse = await this.getPlaylistsFromGoogleAPI(parameters);

@@ -3,5 +3,7 @@ import {YoutubePageToken} from "./YoutubePageToken";
 
 export interface YoutubePlaylistsAPI {
     getPlaylists(youtubePageToken: YoutubePageToken): Promise<YoutubeAPIPlaylistResponse>;
+
+    getFirstPlaylistsPage(): Promise<YoutubeAPIPlaylistResponse>;
 }
 
