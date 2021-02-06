@@ -11,7 +11,7 @@ function openYoutubeAuthURL() {
     open(youtubeAuth.getAuthURL());
 }
 
-describe('YoutubeAPITests', () => {
+describe('Youtube Playlist API Client Tests', () => {
 
     beforeAll(done => {
         jest.setTimeout(20000);

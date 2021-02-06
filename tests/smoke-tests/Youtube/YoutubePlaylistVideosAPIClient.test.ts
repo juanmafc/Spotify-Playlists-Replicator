@@ -11,7 +11,7 @@ function openYoutubeAuthURL() {
     open(youtubeAuth.getAuthURL());
 }
 
-describe('YoutubeAPITests', () => {
+describe('Youtube Playlist Videos API Client Tests', () => {
 
     beforeAll(done => {
         jest.setTimeout(20000);
@@ -36,7 +36,6 @@ describe('YoutubeAPITests', () => {
 
     let youtubePlaylistVideosAPI: YoutubePlaylistVideosAPIClient;
     const PLAYLIST_2019_RANDOMS_ID = 'PLhvKBaHa7_T-dibETOgOScrihV712ZPu1';
-
 
     beforeEach(() => {
         youtubePlaylistVideosAPI = new YoutubePlaylistVideosAPIClient(youtubeAuth);
