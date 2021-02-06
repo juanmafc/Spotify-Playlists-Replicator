@@ -5,11 +5,11 @@ export class YoutubePlaylistsVideosService {
     constructor(private youtubePlaylistVideosAPI: YoutubePlaylistVideosAPI) {}
 
     public async listAllPlaylistVideos(playlistId: string) {
-        let response = await this.youtubePlaylistVideosAPI.getFirstPlaylistVideosPage(playlistId);
-        let allVideos = response.videos;
-        while (response.hasNextPage()) {
-            response = await this.youtubePlaylistVideosAPI.getPlaylistVideos(playlistId, response.nextPageToken);
-            allVideos = allVideos.concat(response.videos);
+        let videosPage = await this.youtubePlaylistVideosAPI.getFirstPlaylistVideosPage(playlistId);
+        let allVideos = videosPage.videos;
+        while (videosPage.hasNextPage()) {
+            videosPage = await this.youtubePlaylistVideosAPI.getNextPlaylistVideosPage(videosPage);
+            allVideos = allVideos.concat(videosPage.videos);
         }
         return allVideos;
     }

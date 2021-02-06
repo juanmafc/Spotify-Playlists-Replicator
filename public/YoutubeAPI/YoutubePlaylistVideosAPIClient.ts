@@ -1,10 +1,10 @@
-import { youtube_v3 } from "googleapis";
-import Params$Resource$Playlistitems$List = youtube_v3.Params$Resource$Playlistitems$List;
-import Schema$PlaylistItemListResponse = youtube_v3.Schema$PlaylistItemListResponse;
-import {YoutubeAPIPlaylistVideosResponse, YoutubeVideo} from "./YoutubeSchemas";
+import {youtube_v3} from "googleapis";
 import {YoutubePageToken} from "./YoutubePageToken";
 import {YoutubePlaylistVideosAPI} from "./YoutubePlaylistVideosAPI";
 import {YoutubeV3Auth} from "./YoutubeV3Auth";
+import {YoutubePlaylistVideosPage} from "./YoutubePlaylistVideosPage";
+import {YoutubePlaylistVideosResponse} from "./YoutubePlaylistVideosResponse";
+import Params$Resource$Playlistitems$List = youtube_v3.Params$Resource$Playlistitems$List;
 
 
 export class YoutubePlaylistVideosAPIClient implements YoutubePlaylistVideosAPI {
@@ -16,16 +16,20 @@ export class YoutubePlaylistVideosAPIClient implements YoutubePlaylistVideosAPI 
         });
     }
 
-    public getFirstPlaylistVideosPage(playlistId: string): Promise<YoutubeAPIPlaylistVideosResponse> {
-        return this.getPlaylistVideos(playlistId, YoutubePageToken.FIRST_PAGE);
+    public getFirstPlaylistVideosPage(playlistId: string): Promise<YoutubePlaylistVideosPage> {
+        return this.getPlaylistVideosFromGoogleAPI(playlistId, YoutubePageToken.FIRST_PAGE);
     }
 
-    public async getPlaylistVideos(playlistId: string, pageToken: YoutubePageToken): Promise<YoutubeAPIPlaylistVideosResponse> {
+    public async getNextPlaylistVideosPage(page: YoutubePlaylistVideosPage): Promise<YoutubePlaylistVideosPage> {
+        return this.getPlaylistVideosFromGoogleAPI(page.playlistId, page.nextPageToken);
+    }
+
+    private async getPlaylistVideosFromGoogleAPI(playlistId: string, pageToken: YoutubePageToken) {
         let parameters = this.buildPlaylistItemsParameters(playlistId, pageToken);
-        let playlistsItemsResponse = await this.getPlaylistsItemsFromAPI(parameters);
-        let videos = this.responseToYoutubeVideos(playlistsItemsResponse);
-        let nextPageToken = playlistsItemsResponse.nextPageToken !== null ? playlistsItemsResponse.nextPageToken : undefined
-        return new YoutubeAPIPlaylistVideosResponse(new YoutubePageToken(nextPageToken), videos);
+        let playlistsVideosResponse = await this.getPlaylistsItemsFromGoogleAPI(parameters);
+        let videos = playlistsVideosResponse.getVideos();
+        let nextPageToken = playlistsVideosResponse.getNextPageToken();
+        return new YoutubePlaylistVideosPage(playlistId, nextPageToken, videos);
     }
 
     private buildPlaylistItemsParameters(playlistId: string, pageToken: YoutubePageToken): Params$Resource$Playlistitems$List {
@@ -37,23 +41,9 @@ export class YoutubePlaylistVideosAPIClient implements YoutubePlaylistVideosAPI 
         };
     }
 
-    private async getPlaylistsItemsFromAPI(parametros: youtube_v3.Params$Resource$Playlistitems$List): Promise<Schema$PlaylistItemListResponse> {
+    private async getPlaylistsItemsFromGoogleAPI(parametros: youtube_v3.Params$Resource$Playlistitems$List): Promise<YoutubePlaylistVideosResponse> {
         let res = await this.youtube.playlistItems.list(parametros);
-        return res.data;
+        return new YoutubePlaylistVideosResponse(res.data);
     }
 
-    private responseToYoutubeVideos(response: Schema$PlaylistItemListResponse) {
-        let videos: YoutubeVideo[] = []
-        let responseVideos = response.items;
-        if ( responseVideos !== undefined) {
-            videos = responseVideos
-                .filter(video => video.id !== null && video.snippet !== undefined).map(video => {
-                    return {
-                        id: <string> video.id,
-                        title: <string> video.snippet!.title
-                    };
-                });
-        }
-        return videos
-    }
 }

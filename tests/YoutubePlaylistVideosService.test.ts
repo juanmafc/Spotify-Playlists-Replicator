@@ -1,8 +1,9 @@
 import {mock, mockReset} from "jest-mock-extended";
 import {YoutubePlaylistVideosAPI} from "../public/YoutubeAPI/YoutubePlaylistVideosAPI";
-import {YoutubeAPIPlaylistVideosResponse, YoutubeVideo} from "../public/YoutubeAPI/YoutubeSchemas";
+import {YoutubeVideo} from "../public/YoutubeAPI/YoutubeSchemas";
 import {YoutubePageToken} from "../public/YoutubeAPI/YoutubePageToken";
 import {YoutubePlaylistsVideosService} from "../public/YoutubeAPI/YoutubePlaylistsVideosService";
+import {YoutubePlaylistVideosPage} from "../public/YoutubeAPI/YoutubePlaylistVideosPage";
 
 describe('Youtube Playlist Videos Service Tests', () => {
 
@@ -14,12 +15,12 @@ describe('Youtube Playlist Videos Service Tests', () => {
         youtubeService = new YoutubePlaylistsVideosService(youtubePlaylistVideosAPIMock);
     })
 
-    function mockPlaylistsItemsResponseForFirstPage(playlistId: string, response: YoutubeAPIPlaylistVideosResponse) {
-        youtubePlaylistVideosAPIMock.getFirstPlaylistVideosPage.calledWith(playlistId).mockResolvedValue(response);
+    function mockPlaylistsItemsResponseForFirstPage(page: YoutubePlaylistVideosPage) {
+        youtubePlaylistVideosAPIMock.getFirstPlaylistVideosPage.calledWith(page.playlistId).mockResolvedValue(page);
     }
 
-    function mockPlaylistsItemsResponseForPageToken(playlistId: string, pageToken: YoutubePageToken, response: YoutubeAPIPlaylistVideosResponse) {
-        youtubePlaylistVideosAPIMock.getPlaylistVideos.calledWith(playlistId, pageToken).mockResolvedValue(response);
+    function mockPlaylistsItemsResponseForPageToken(page: YoutubePlaylistVideosPage, nextPage: YoutubePlaylistVideosPage) {
+        youtubePlaylistVideosAPIMock.getNextPlaylistVideosPage.calledWith(page).mockResolvedValue(nextPage);
     }
 
     function createYoutubeVideo(id: string, title: string): YoutubeVideo {
@@ -29,13 +30,13 @@ describe('Youtube Playlist Videos Service Tests', () => {
         };
     }
 
-    function createLastPageResponse(videos: YoutubeVideo[]) {
-        return new YoutubeAPIPlaylistVideosResponse(YoutubePageToken.NO_PAGE, videos);
+    function createLastPage(playlistId: string, videos: YoutubeVideo[]) {
+        return new YoutubePlaylistVideosPage(playlistId, YoutubePageToken.NO_PAGE, videos);
     }
 
     test('Given a single response with no videos when getting all videos then an empty collection should be returned', async () => {
         let playlistId = "playlistId";
-        mockPlaylistsItemsResponseForFirstPage(playlistId, createLastPageResponse([]));
+        mockPlaylistsItemsResponseForFirstPage(createLastPage(playlistId, []));
 
         let videos = await youtubeService.listAllPlaylistVideos(playlistId);
 
@@ -47,7 +48,7 @@ describe('Youtube Playlist Videos Service Tests', () => {
         let responseVideos = [
             createYoutubeVideo('id1', 'title1')
         ];
-        mockPlaylistsItemsResponseForFirstPage(playlistId, createLastPageResponse(responseVideos));
+        mockPlaylistsItemsResponseForFirstPage(createLastPage(playlistId, responseVideos));
 
         let videos = await youtubeService.listAllPlaylistVideos(playlistId);
 
@@ -60,7 +61,7 @@ describe('Youtube Playlist Videos Service Tests', () => {
             createYoutubeVideo('id1', 'title1'),
             createYoutubeVideo('id2', 'title2')
         ];
-        mockPlaylistsItemsResponseForFirstPage(playlistId, createLastPageResponse(responseVideos));
+        mockPlaylistsItemsResponseForFirstPage(createLastPage(playlistId, responseVideos));
 
         let videos = await youtubeService.listAllPlaylistVideos(playlistId);
 
@@ -76,10 +77,10 @@ describe('Youtube Playlist Videos Service Tests', () => {
         let secondResponseVideos = [
             createYoutubeVideo('id3', 'title3')
         ];
-        let firstPageResponse = new YoutubeAPIPlaylistVideosResponse(new YoutubePageToken("secondPage"), firstResponseVideos);
-        let secondPageResponse = createLastPageResponse(secondResponseVideos);
-        mockPlaylistsItemsResponseForFirstPage(playlistId, firstPageResponse);
-        mockPlaylistsItemsResponseForPageToken(playlistId, firstPageResponse.nextPageToken, secondPageResponse);
+        let firstPageResponse = new YoutubePlaylistVideosPage(playlistId, new YoutubePageToken("secondPage"), firstResponseVideos);
+        let secondPageResponse = createLastPage(playlistId, secondResponseVideos);
+        mockPlaylistsItemsResponseForFirstPage(firstPageResponse);
+        mockPlaylistsItemsResponseForPageToken(firstPageResponse, secondPageResponse);
 
         let videos = await youtubeService.listAllPlaylistVideos(playlistId);
 
