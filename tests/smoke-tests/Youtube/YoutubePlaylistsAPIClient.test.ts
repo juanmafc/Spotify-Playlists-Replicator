@@ -1,22 +1,14 @@
 import express from "express";
 import open from "open";
-import {Auth} from "googleapis";
 import {YoutubePlaylistsAPIClient} from "../../../public/YoutubeAPI/YoutubePlaylistsAPIClient";
 import {YoutubePageToken} from "../../../public/YoutubeAPI/YoutubePageToken";
+import {YoutubeV3Auth} from "../../../public/YoutubeAPI/YoutubeV3Auth";
+import {MAIN_CONFIG} from "../../../public/YoutubeAPI/configs/YoutubeConfig";
 
-
-let CLIENT_ID = '823820379687-o0e7cg9fsqu4ocjonfhu1bcs3o5bqoqp.apps.googleusercontent.com';
-let CLIENT_SECRET = '9GcLsxp9KSSJebhQ1a6UV1IQ';
-let REDIRECT_URL = 'http://localhost:8080/callback';
-
-let oAuth2Client = new Auth.OAuth2Client(CLIENT_ID, CLIENT_SECRET, REDIRECT_URL);
+let youtubeAuth = new YoutubeV3Auth(MAIN_CONFIG);
 
 function openYoutubeAuthURL() {
-    let url = oAuth2Client.generateAuthUrl({
-        access_type: 'offline',
-        scope: 'https://www.googleapis.com/auth/youtube.readonly'
-    });
-    open(url);
+    open(youtubeAuth.getAuthURL());
 }
 
 describe('YoutubeAPITests', () => {
@@ -30,8 +22,7 @@ describe('YoutubeAPITests', () => {
 
             let userAuthCode = request.query.code;
             if (typeof userAuthCode === "string") {
-                const {tokens} = await oAuth2Client.getToken(userAuthCode);
-                oAuth2Client.setCredentials(tokens);
+                await youtubeAuth.setAccessToken(userAuthCode);
             }
             else {
                 console.log("Undefined user auth code");
@@ -46,7 +37,7 @@ describe('YoutubeAPITests', () => {
     let youtubePlaylistsAPI: YoutubePlaylistsAPIClient;
 
     beforeEach(() => {
-        youtubePlaylistsAPI = new YoutubePlaylistsAPIClient(oAuth2Client);
+        youtubePlaylistsAPI = new YoutubePlaylistsAPIClient(youtubeAuth);
     });
 
     test('Get first page of my playlists', async () => {

@@ -1,17 +1,18 @@
-import { Auth, youtube_v3 } from "googleapis";
+import { youtube_v3 } from "googleapis";
 import Params$Resource$Playlistitems$List = youtube_v3.Params$Resource$Playlistitems$List;
 import Schema$PlaylistItemListResponse = youtube_v3.Schema$PlaylistItemListResponse;
 import {YoutubeAPIPlaylistVideosResponse, YoutubeVideo} from "./YoutubeSchemas";
 import {YoutubePageToken} from "./YoutubePageToken";
 import {YoutubePlaylistVideosAPI} from "./YoutubePlaylistVideosAPI";
+import {YoutubeV3Auth} from "./YoutubeV3Auth";
 
 
 export class YoutubePlaylistVideosAPIClient implements YoutubePlaylistVideosAPI {
     private youtube: youtube_v3.Youtube;
 
-    constructor(oAuth2Client: Auth.OAuth2Client) {
+    constructor(youtubeAuth: YoutubeV3Auth) {
         this.youtube = new youtube_v3.Youtube({
-            auth: oAuth2Client
+            auth: youtubeAuth.oAuth2Client
         });
     }
 
