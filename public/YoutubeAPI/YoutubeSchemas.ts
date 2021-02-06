@@ -15,16 +15,6 @@ export class YoutubeAPIPlaylistResponse {
     }
 }
 
-export class YoutubeAPIPlaylistVideosResponse {
-
-    constructor(public nextPageToken: YoutubePageToken,
-                public videos: YoutubeVideo[]) {};
-
-    public hasNextPage() {
-        return this.nextPageToken.valueHasContent();
-    }
-}
-
 export interface YoutubeVideo {
     id: string,
     title: string
