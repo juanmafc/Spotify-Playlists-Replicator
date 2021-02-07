@@ -1,7 +1,7 @@
-import {YoutubeVideo} from "../YoutubeSchemas";
 import {YoutubePageToken} from "../YoutubePageToken";
 import {youtube_v3} from "googleapis";
 import Schema$PlaylistItemListResponse = youtube_v3.Schema$PlaylistItemListResponse;
+import {YoutubeVideo} from "./YoutubeVideo";
 
 export class YoutubePlaylistVideosResponse {
     constructor(private response: Schema$PlaylistItemListResponse) {

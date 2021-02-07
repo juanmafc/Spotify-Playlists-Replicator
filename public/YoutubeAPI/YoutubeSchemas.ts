@@ -15,7 +15,3 @@ export class YoutubeAPIPlaylistResponse {
     }
 }
 
-export interface YoutubeVideo {
-    id: string,
-    title: string
-}

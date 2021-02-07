@@ -1,5 +1,5 @@
 import {YoutubePageToken} from "../YoutubePageToken";
-import {YoutubeVideo} from "../YoutubeSchemas";
+import {YoutubeVideo} from "./YoutubeVideo";
 
 export class YoutubePlaylistVideosPage {
 
