@@ -1,7 +1,7 @@
 import {SpotifyClientCredentialsAccessToken} from "../../public/SpotifyAPI/SpotifyClientCredentialsAccessToken";
 import {SpotifyTrackSearchAPIClient} from "../../public/SpotifyAPI/SpotifyTrackSearchAPIClient";
 
-test('Search Spotify song',async () => {
+test('Search Spotify track',async () => {
     let spotifySongSearchService = new SpotifyTrackSearchAPIClient(new SpotifyClientCredentialsAccessToken());
 
     let spotifyTracks = await spotifySongSearchService.search("Eddie Guerrero");
