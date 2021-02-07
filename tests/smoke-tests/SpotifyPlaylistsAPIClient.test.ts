@@ -60,8 +60,8 @@ describe('Spotify Playlist API Client Tests', () => {
         let playlistId = '33UarO8Z9svZQcHZVyzml7';
         let tracksIds = ['spotify:track:46dt4K4GlkhOdE0KaQAHyu'];
 
-        let snapshot = await spotifyPlaylistsAPIClient.addTracksToPlaylist(playlistId, tracksIds);
+        let snapshotId = await spotifyPlaylistsAPIClient.addTracksToPlaylist(playlistId, tracksIds);
 
-        expect(snapshot.snapshot_id).toBeDefined();
+        expect(snapshotId).toBeDefined();
     });
 });

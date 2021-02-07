@@ -1,6 +1,6 @@
 import {SpotifyClientCredentialsAccessToken} from "./SpotifyClientCredentialsAccessToken";
 import {SpotifyTrack} from "./SpotifyTrack";
-import SpotifyWebApi from "spotify-web-api-js";
+import SpotifyWebApi from "spotify-web-api-node";
 
 export class SpotifyTrackSearchAPIClient {
 
@@ -20,7 +20,7 @@ export class SpotifyTrackSearchAPIClient {
 
     private async searchTracks(searchString: string) {
         let response = await this.spotify.searchTracks(searchString);
-        return response.tracks.items.map(track =>
+        return response.body.tracks!.items.map(track =>
             new SpotifyTrack(track.id, track.name)
         );
     }

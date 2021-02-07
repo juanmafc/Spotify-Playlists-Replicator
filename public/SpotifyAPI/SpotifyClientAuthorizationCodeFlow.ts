@@ -1,18 +1,4 @@
-import axios from "axios";
-import querystring from "querystring";
-
-interface SpotifyAccessTokenResponse {
-    access_token: string,
-    token_type: string,
-    expires_in: number,
-    scope: string
-}
-
-interface RequestData {
-    grant_type: string,
-    code: string,
-    redirect_uri: string
-}
+import SpotifyWebApi from "spotify-web-api-node";
 
 export class SpotifyClientAuthorizationCodeFlow {
 
@@ -21,47 +7,26 @@ export class SpotifyClientAuthorizationCodeFlow {
 
     private accessToken: string = '';
 
-    private encodeCredentials() {
-        return Buffer.from(this.clientId + ':' + this.clientSecret).toString('base64');
+    private spotifyApi: SpotifyWebApi;
+
+    constructor() {
+        this.spotifyApi = new SpotifyWebApi({
+            clientId: this.clientId,
+            clientSecret: this.clientSecret,
+            redirectUri: 'http://localhost:8888/callback'
+        });
     }
 
     public async setAccessToken(userAuthCode: string) {
-        let authRequestHeaders = {
-            headers: {
-                Authorization: 'Basic ' + this.encodeCredentials(),
-                'Content-Type': 'application/x-www-form-urlencoded'
-            }
-        }
-
-        let authData: RequestData = {
-            grant_type: 'authorization_code',
-            code: userAuthCode,
-            redirect_uri: "http://localhost:8888/callback"
-        }
-
-        this.accessToken = await this.executeRequest(authData, authRequestHeaders);
-    }
-
-    private async executeRequest(authData: RequestData, authHeaders: any) {
-        let encodedData = this.encodeData(authData);
-        let response = await axios.post<SpotifyAccessTokenResponse>('https://accounts.spotify.com/api/token', encodedData, authHeaders);
-        return response.data.access_token;
+        let response = await this.spotifyApi.authorizationCodeGrant(userAuthCode);
+        this.accessToken = response.body['access_token'];
     }
 
     public getAuthURL() {
-        let clientId = 'a29b6f296987468a9f15cfe94fca6eb9';
-        let authorizationCodeParams = querystring.stringify({
-            response_type: "code",
-            client_id: clientId,
-            scope: "playlist-modify-private",
-            redirect_uri: "http://localhost:8888/callback"
-        })
+        let scopes = ['playlist-modify-private'];
+        let state = 'some-state-of-my-choice';
 
-        return 'https://accounts.spotify.com/authorize?' + authorizationCodeParams;
-    }
-
-    private encodeData(data: any) {
-        return querystring.stringify(data);
+        return this.spotifyApi.createAuthorizeURL(scopes, state);
     }
 
     public getAccessToken() {

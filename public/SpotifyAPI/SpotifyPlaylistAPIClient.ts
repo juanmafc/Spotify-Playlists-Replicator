@@ -1,12 +1,12 @@
 import {SpotifyClientAuthorizationCodeFlow} from "./SpotifyClientAuthorizationCodeFlow";
 import {SpotifyNewPlaylistInfo} from "./SpotifyNewPlaylistInfo";
-import SpotifyWebApi from "spotify-web-api-js";
+import SpotifyWebApi from "spotify-web-api-node";
 
 class SpotifyPlaylist {
-    constructor(public id: string | undefined,
-                public name: string | undefined,
-                public isPublic: boolean | undefined,
-                public description: string | null | undefined) {}
+    constructor(public id: string,
+                public name: string,
+                public isPublic: boolean | null,
+                public description: string | null) {}
 }
 
 export class SpotifyPlaylistAPIClient {
@@ -19,13 +19,18 @@ export class SpotifyPlaylistAPIClient {
     }
 
     public async create(newPlaylistInfo: SpotifyNewPlaylistInfo) {
-        let user = await this.spotify.getMe();
-        let response = await this.spotify.createPlaylist(user.id, newPlaylistInfo);
-        return new SpotifyPlaylist(response?.id, response?.name, response?.public, response?.description);
+        let response = await this.spotify.createPlaylist(newPlaylistInfo.name, {
+            'description': newPlaylistInfo.description,
+            'public': newPlaylistInfo.public
+        });
+        //Todo: define what to do on error
+        let body = response.body;
+        return new SpotifyPlaylist(body.id, body.name, body.public, body.description);
     }
 
     public async addTracksToPlaylist(playlistId: string, tracksIds: string[]) {
-        let playlistSnapshot = await this.spotify.addTracksToPlaylist(playlistId, tracksIds)
-        return playlistSnapshot;
+        let response = await this.spotify.addTracksToPlaylist(playlistId, tracksIds)
+        //Todo: define what to do on error
+        return response.body.snapshot_id;
     }
 }
