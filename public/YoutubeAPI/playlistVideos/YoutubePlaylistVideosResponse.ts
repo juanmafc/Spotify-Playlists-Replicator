@@ -1,5 +1,5 @@
-import {YoutubeVideo} from "./YoutubeSchemas";
-import {YoutubePageToken} from "./YoutubePageToken";
+import {YoutubeVideo} from "../YoutubeSchemas";
+import {YoutubePageToken} from "../YoutubePageToken";
 import {youtube_v3} from "googleapis";
 import Schema$PlaylistItemListResponse = youtube_v3.Schema$PlaylistItemListResponse;
 

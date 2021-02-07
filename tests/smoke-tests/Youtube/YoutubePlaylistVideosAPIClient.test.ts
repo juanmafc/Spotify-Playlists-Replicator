@@ -1,6 +1,6 @@
 import express from "express";
 import open from "open";
-import {YoutubePlaylistVideosAPIClient} from "../../../public/YoutubeAPI/YoutubePlaylistVideosAPIClient";
+import {YoutubePlaylistVideosAPIClient} from "../../../public/YoutubeAPI/playlistVideos/YoutubePlaylistVideosAPIClient";
 import {YoutubeV3Auth} from "../../../public/YoutubeAPI/YoutubeV3Auth";
 import {MAIN_CONFIG} from "../../../public/YoutubeAPI/configs/YoutubeConfig";
 

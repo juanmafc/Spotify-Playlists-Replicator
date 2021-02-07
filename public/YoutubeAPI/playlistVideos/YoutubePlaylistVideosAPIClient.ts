@@ -1,6 +1,6 @@
 import {youtube_v3} from "googleapis";
 import {YoutubePlaylistVideosAPI} from "./YoutubePlaylistVideosAPI";
-import {YoutubeV3Auth} from "./YoutubeV3Auth";
+import {YoutubeV3Auth} from "../YoutubeV3Auth";
 import {YoutubePlaylistVideosPage} from "./YoutubePlaylistVideosPage";
 import {YoutubePlaylistVideosResponse} from "./YoutubePlaylistVideosResponse";
 import {YoutubePlaylistVideosAPIParameters} from "./YoutubePlaylistVideosAPIParameters";

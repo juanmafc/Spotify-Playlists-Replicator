@@ -1,8 +1,8 @@
 import {mock, mockReset} from "jest-mock-extended";
-import {YoutubePlaylistsAPI} from "../public/YoutubeAPI/YoutubePlaylistsAPI";
+import {YoutubePlaylistsAPI} from "../public/YoutubeAPI/playlists/YoutubePlaylistsAPI";
 import {YoutubeAPIPlaylistResponse, YoutubePlaylist} from "../public/YoutubeAPI/YoutubeSchemas";
 import {YoutubePageToken} from "../public/YoutubeAPI/YoutubePageToken";
-import {YoutubePlaylistsService} from "../public/YoutubeAPI/YoutubePlaylistsService";
+import {YoutubePlaylistsService} from "../public/YoutubeAPI/playlists/YoutubePlaylistsService";
 
 describe('Youtube Playlists Service Tests', () => {
 

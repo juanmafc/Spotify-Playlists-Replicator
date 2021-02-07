@@ -1,4 +1,4 @@
-import {YoutubePageToken} from "./YoutubePageToken";
+import {YoutubePageToken} from "../YoutubePageToken";
 import {youtube_v3} from "googleapis";
 import Params$Resource$Playlistitems$List = youtube_v3.Params$Resource$Playlistitems$List;
 
