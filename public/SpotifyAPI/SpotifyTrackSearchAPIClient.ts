@@ -1,4 +1,4 @@
-import {SpotifyClientCredentialsAccessToken} from "./SpotifyClientCredentialsAccessToken";
+import {SpotifyClientCredentialsFlow} from "./SpotifyClientCredentialsFlow";
 import {SpotifyTrack} from "./SpotifyTrack";
 import SpotifyWebApi from "spotify-web-api-node";
 
@@ -6,7 +6,7 @@ export class SpotifyTrackSearchAPIClient {
 
     private spotify = new SpotifyWebApi();
 
-    constructor(private auth: SpotifyClientCredentialsAccessToken) {}
+    constructor(private auth: SpotifyClientCredentialsFlow) {}
 
     public async search(searchString: string): Promise<SpotifyTrack[]> {
         await this.setAccessToken();

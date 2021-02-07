@@ -7,7 +7,7 @@ interface SpotifyAccessTokenResponse {
     scope: string
 }
 
-export class SpotifyClientCredentialsAccessToken {
+export class SpotifyClientCredentialsFlow {
 
     private readonly clientId = 'a29b6f296987468a9f15cfe94fca6eb9';
     private readonly clientSecret = 'd3a8c51f99b24a7891dc73c6a26b7434';
